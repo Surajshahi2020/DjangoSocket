@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket</title>
+  </head>
+  <body>
+    <div id="message-container"></div>
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Type a message" />
+      <button type="submit">Send</button>
+    </form>
+
+    <script>
+      var socket = new WebSocket("ws://127.0.0.1:8000/ws/my_socket/");
+      socket.onopen = function () {
+        console.log("WebSocket connection established.");
+      };
+
+      socket.onmessage = function (event) {
+        var message = event.data;
+        var messageElement = document.createElement("p");
+        messageElement.textContent = message;
+        document
+          .getElementById("message-container")
+          .appendChild(messageElement);
+      };
+
+      document
+        .getElementById("message-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var input = document.getElementById("message-input");
+          var message = input.value;
+          input.value = "";
+
+          socket.send(message);
+        });
+    </script>
+  </body>
+</html>
