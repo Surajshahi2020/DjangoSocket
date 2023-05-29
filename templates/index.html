@@ -4,14 +4,34 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/style.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
     <title>Socket</title>
   </head>
   <body>
-    <div id="message-container"></div>
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Type a message" />
-      <button type="submit">Send</button>
-    </form>
+    <div class="container">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="room-input">Room</label>
+          <input type="text" class="form-control" id="room-input" />
+        </div>
+        <div class="form-group">
+          <label for="username-input">Username</label>
+          <input type="text" class="form-control" id="username-input" />
+        </div>
+        <button class="btn btn-success" type="submit" onclick="sendData()">
+          Submit
+        </button>
+      </div>
+    </div>
 
     <script>
       var socket = new WebSocket("ws://127.0.0.1:8000/ws/my_socket/");
@@ -19,26 +39,18 @@
         console.log("WebSocket connection established.");
       };
 
-      socket.onmessage = function (event) {
-        var message = event.data;
-        var messageElement = document.createElement("p");
-        messageElement.textContent = message;
-        document
-          .getElementById("message-container")
-          .appendChild(messageElement);
-      };
-
-      document
-        .getElementById("message-form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-
-          var input = document.getElementById("message-input");
-          var message = input.value;
-          input.value = "";
-
-          socket.send(message);
-        });
+      function sendData() {
+        var roomInput = document.getElementById("room-input").value;
+        var usernameInput = document.getElementById("username-input").value;
+        var data = {
+          room: roomInput,
+          username: usernameInput,
+        };
+        localStorage.setItem("data", username);
+        socket.send(JSON.stringify(data));
+        console.log("Data sent:", data);
+        window.location.href = "" + roomInput;
+      }
     </script>
   </body>
 </html>

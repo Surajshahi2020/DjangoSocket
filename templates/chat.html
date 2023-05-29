@@ -1,0 +1,60 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+/>
+
+<body>
+  <div class="chat-container">
+    <div class="content-white">
+      <div class="message">
+        <h4>Hello world</h4>
+      </div>
+      <div class="posted">
+        <h4>9 years ago</h4>
+      </div>
+    </div>
+    <div class="username">Suraj shahi</div>
+
+    <div class="submit-form">
+      <input id="message-input" type="text" placeholder="Enter message" />
+      <button
+        id="submit-button"
+        type="submit"
+        class="btn btn-success"
+        onclick="sendMessage()"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+
+  <script>
+    var socket = new WebSocket("ws://127.0.0.1:8000/ws/my_socket/");
+    socket.onopen = function () {
+      console.log("WebSocket connection established.");
+    };
+
+    function getRoomNameFromURL() {
+      var url = window.location.href;
+      var parts = url.split("/");
+      var roomName = parts[parts.length - 2];
+      return roomName;
+    }
+
+    function sendMessage() {
+      var messageInput = document.getElementById("message-input").value;
+      var username = localStorage.getItem("username");
+      var roomName = getRoomNameFromURL();
+      var data = {
+        message: messageInput,
+        creator: username,
+        room: roomName,
+      };
+      socket.send(JSON.stringify(data));
+      messageInput.value = "";
+      console.log("Data sent:", data);
+    }
+  </script>
+</body>
