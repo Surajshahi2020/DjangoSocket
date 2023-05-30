@@ -42,11 +42,11 @@
       function sendData() {
         var roomInput = document.getElementById("room-input").value;
         var usernameInput = document.getElementById("username-input").value;
+        localStorage.setItem("username", usernameInput);
         var data = {
           room: roomInput,
           username: usernameInput,
         };
-        localStorage.setItem("data", username);
         socket.send(JSON.stringify(data));
         console.log("Data sent:", data);
         window.location.href = "" + roomInput;

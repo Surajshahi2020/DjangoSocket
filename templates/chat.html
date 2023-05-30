@@ -7,15 +7,7 @@
 
 <body>
   <div class="chat-container">
-    <div class="content-white">
-      <div class="message">
-        <h4>Hello world</h4>
-      </div>
-      <div class="posted">
-        <h4>9 years ago</h4>
-      </div>
-    </div>
-    <div class="username">Suraj shahi</div>
+    <div id="message-container" class="content-white"></div>
 
     <div class="submit-form">
       <input id="message-input" type="text" placeholder="Enter message" />
@@ -32,8 +24,8 @@
 
   <script>
     var socket = new WebSocket("ws://127.0.0.1:8000/ws/my_socket/");
-    socket.onopen = function () {
-      console.log("WebSocket connection established.");
+    socket.onopen = function (event) {
+      console.log("Socket connection successful");
     };
 
     function getRoomNameFromURL() {
@@ -53,8 +45,40 @@
         room: roomName,
       };
       socket.send(JSON.stringify(data));
-      messageInput.value = "";
-      console.log("Data sent:", data);
+      document.getElementById("message-input").value = "";
     }
+
+    function printMessage(message) {
+      const messageContainer = document.getElementById("message-container");
+      const messageElement = document.createElement("div");
+      var username = localStorage.getItem("username");
+      let data = JSON.parse(message);
+      if (data.creator === username) {
+        messageElement.classList.add("message-right");
+        messageElement.innerHTML = `
+            <div class="message-box">
+              <h4>${data.content}</h4>
+              <h4>${data.creator}</h4>
+              <h4>${data.created_at}</h4>
+            </div>
+            `;
+        messageContainer.appendChild(messageElement);
+      } else {
+        messageElement.classList.add("message-left");
+        messageElement.innerHTML = `
+            <div class="message-box">
+              <h4>${data.content}</h4>
+              <h4>${data.creator}</h4>
+              <h4>${data.created_at}</h4>
+            </div>
+            `;
+        messageContainer.appendChild(messageElement);
+      }
+    }
+
+    socket.onmessage = function (event) {
+      const message = event.data;
+      printMessage(message);
+    };
   </script>
 </body>
