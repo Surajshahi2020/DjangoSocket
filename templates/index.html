@@ -34,20 +34,15 @@
     </div>
 
     <script>
-      var socket = new WebSocket("ws://127.0.0.1:8000/ws/my_socket/");
-      socket.onopen = function () {
-        console.log("WebSocket connection established.");
-      };
-
       function sendData() {
         var roomInput = document.getElementById("room-input").value;
         var usernameInput = document.getElementById("username-input").value;
         localStorage.setItem("username", usernameInput);
+        localStorage.setItem("room", roomInput);
         var data = {
           room: roomInput,
           username: usernameInput,
         };
-        socket.send(JSON.stringify(data));
         console.log("Data sent:", data);
         window.location.href = "" + roomInput;
       }

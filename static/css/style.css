@@ -69,3 +69,15 @@ input#message-input {
 div.chat-title {
   background-color: red;
 }
+
+div.title-up {
+  background-color: lightblue;
+  color: black;
+  width: 7%;
+  padding: 4px 162px;
+}
+
+div.title-up h4 {
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+}
